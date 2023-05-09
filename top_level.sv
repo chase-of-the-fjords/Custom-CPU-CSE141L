@@ -43,7 +43,8 @@ module top_level(
                .mach_code);
 
 // control decoder
-  Control ctl1(.instr(),
+  Control ctl1(.instr(mach_code[8:6]),
+  .typeselect(mach_code[1:0]),
   .RegDst  (), 
   .Branch  (relj)  , 
   .MemWrite , 
@@ -80,10 +81,10 @@ module top_level(
         .pari  );  
 
   dat_mem dm1(.dat_in(datB)  ,  // from reg_file
-             .clk           ,
-			 .wr_en  (MemWrite), // stores
-			 .addr   (datA),
-             .dat_out());
+            .clk           ,
+            .wr_en  (MemWrite), // stores
+            .addr   (datA),
+            .dat_out());
 
 // registered flags from ALU
   always_ff @(posedge clk) begin
