@@ -1,0 +1,26 @@
+setbranch loop 10110
+setbranch test 00111
+
+// Test code
+# More test code
+loop: rxor r0
+rxor r5
+rxor r7
+
+shift r3, 000
+increment r3
+decrement r6
+
+mem r7, 00
+mem r3 01
+
+halfset 1111
+halfset 0000
+
+and r3 r7
+and r4, r2
+
+blt R1 R2 loop
+
+test: and r5 r6
+beq R3 R7 test
