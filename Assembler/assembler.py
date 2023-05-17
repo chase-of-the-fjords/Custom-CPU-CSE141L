@@ -31,7 +31,7 @@ machine_code = []
 
 line_num = 0
 
-with open("Assembler/code.txt") as file:
+with open("Assembler/program1.txt") as file:
     for line in file:
         line_num += 1
         line = line.rstrip()
@@ -95,8 +95,8 @@ with open("Assembler/code.txt") as file:
 
             line_num += 1
 
-        # increment R#
-        if (split[0].casefold() == "increment".casefold()):
+        # lshift0 R#
+        if (split[0].casefold() == "lshift0".casefold()):
             # Checks for syntax errors
             if len(split) < 2:
                 raise SyntaxError('Operation is incomplete on line ' + str(line_numbers[index]))
@@ -106,12 +106,57 @@ with open("Assembler/code.txt") as file:
             # Writes the machine code line
             code = "001" # Command value
             code += get_reg_number(split[1][1], line_numbers[index]) # Register value
-            code += "110"
+            code += "000"
 
             line_num += 1
         
-        # decrement R#
-        if (split[0].casefold() == "decrement".casefold()):
+        # lshift1 R#
+        if (split[0].casefold() == "lshift1".casefold()):
+            # Checks for syntax errors
+            if len(split) < 2:
+                raise SyntaxError('Operation is incomplete on line ' + str(line_numbers[index]))
+            if re.search('^[Rr][01234567]$', split[1]) is None:
+                raise SyntaxError('Operation has invalid register value on line ' + str(line_numbers[index]))
+
+            # Writes the machine code line
+            code = "001" # Command value
+            code += get_reg_number(split[1][1], line_numbers[index]) # Register value
+            code += "001"
+
+            line_num += 1
+
+        # rshift0 R#
+        if (split[0].casefold() == "rshift0".casefold()):
+            # Checks for syntax errors
+            if len(split) < 2:
+                raise SyntaxError('Operation is incomplete on line ' + str(line_numbers[index]))
+            if re.search('^[Rr][01234567]$', split[1]) is None:
+                raise SyntaxError('Operation has invalid register value on line ' + str(line_numbers[index]))
+
+            # Writes the machine code line
+            code = "001" # Command value
+            code += get_reg_number(split[1][1], line_numbers[index]) # Register value
+            code += "010"
+
+            line_num += 1
+        
+        # rshift1 R#
+        if (split[0].casefold() == "rshift1".casefold()):
+            # Checks for syntax errors
+            if len(split) < 2:
+                raise SyntaxError('Operation is incomplete on line ' + str(line_numbers[index]))
+            if re.search('^[Rr][01234567]$', split[1]) is None:
+                raise SyntaxError('Operation has invalid register value on line ' + str(line_numbers[index]))
+
+            # Writes the machine code line
+            code = "001" # Command value
+            code += get_reg_number(split[1][1], line_numbers[index]) # Register value
+            code += "011"
+
+            line_num += 1
+        
+        # lshiftc R#
+        if (split[0].casefold() == "lshiftc".casefold()):
             # Checks for syntax errors
             if len(split) < 2:
                 raise SyntaxError('Operation is incomplete on line ' + str(line_numbers[index]))
@@ -125,6 +170,51 @@ with open("Assembler/code.txt") as file:
 
             line_num += 1
         
+        # rshiftc R#
+        if (split[0].casefold() == "rshiftc".casefold()):
+            # Checks for syntax errors
+            if len(split) < 2:
+                raise SyntaxError('Operation is incomplete on line ' + str(line_numbers[index]))
+            if re.search('^[Rr][01234567]$', split[1]) is None:
+                raise SyntaxError('Operation has invalid register value on line ' + str(line_numbers[index]))
+
+            # Writes the machine code line
+            code = "001" # Command value
+            code += get_reg_number(split[1][1], line_numbers[index]) # Register value
+            code += "101"
+
+            line_num += 1
+
+        # decrement R#
+        if (split[0].casefold() == "decrement".casefold()):
+            # Checks for syntax errors
+            if len(split) < 2:
+                raise SyntaxError('Operation is incomplete on line ' + str(line_numbers[index]))
+            if re.search('^[Rr][01234567]$', split[1]) is None:
+                raise SyntaxError('Operation has invalid register value on line ' + str(line_numbers[index]))
+
+            # Writes the machine code line
+            code = "001" # Command value
+            code += get_reg_number(split[1][1], line_numbers[index]) # Register value
+            code += "110"
+
+            line_num += 1
+        
+        # increment R#
+        if (split[0].casefold() == "increment".casefold()):
+            # Checks for syntax errors
+            if len(split) < 2:
+                raise SyntaxError('Operation is incomplete on line ' + str(line_numbers[index]))
+            if re.search('^[Rr][01234567]$', split[1]) is None:
+                raise SyntaxError('Operation has invalid register value on line ' + str(line_numbers[index]))
+
+            # Writes the machine code line
+            code = "001" # Command value
+            code += get_reg_number(split[1][1], line_numbers[index]) # Register value
+            code += "111"
+
+            line_num += 1
+
         # mem R# XX
         if (split[0].casefold() == "mem".casefold()):
             # Checks for syntax errors
@@ -143,6 +233,65 @@ with open("Assembler/code.txt") as file:
 
             line_num += 1
         
+        # store R#
+        if (split[0].casefold() == "store".casefold()):
+            # Checks for syntax errors
+            if len(split) < 2:
+                raise SyntaxError('Operation is incomplete on line ' + str(line_numbers[index]))
+            if re.search('^[Rr][01234567]$', split[1]) is None:
+                raise SyntaxError('Operation has invalid register value on line ' + str(line_numbers[index]))
+
+            # Writes the machine code line
+            code += "010" # Command value
+            code += get_reg_number(split[1][1], line_numbers[index]) # Register value
+            code += "001"
+
+            line_num += 1
+
+        # load R#
+        if (split[0].casefold() == "load".casefold()):
+            # Checks for syntax errors
+            if len(split) < 2:
+                raise SyntaxError('Operation is incomplete on line ' + str(line_numbers[index]))
+            if re.search('^[Rr][01234567]$', split[1]) is None:
+                raise SyntaxError('Operation has invalid register value on line ' + str(line_numbers[index]))
+
+            # Writes the machine code line
+            code += "010" # Command value
+            code += get_reg_number(split[1][1], line_numbers[index]) # Register value
+            code += "000"
+
+            line_num += 1
+
+        # move R# R#
+        if (split[0].casefold() == "move".casefold()):
+            # Checks for syntax errors
+            if len(split) < 3:
+                raise SyntaxError('Operation is incomplete on line ' + str(line_numbers[index]))
+            if re.search('^[Rr][01234567],{0,1}$', split[1]) is None:
+                raise SyntaxError('Operation has invalid register value on line ' + str(line_numbers[index]))
+            if re.search('^[Rr][01234567]$', split[2]) is None:
+                raise SyntaxError('Operation has invalid register value on line ' + str(line_numbers[index]))
+
+            if (get_reg_number(split[1][1], line_numbers[index]) == '000'):
+                code += "010" # Command value
+                code += get_reg_number(split[2][1], line_numbers[index]) # Register value
+                code += "011"
+                line_num += 1
+            elif (get_reg_number(split[2][1], line_numbers[index]) == '000'):
+                code += "010" # Command value
+                code += get_reg_number(split[1][1], line_numbers[index]) # Register value
+                code += "010"
+                line_num += 1
+            else:
+                code += "010" # Command value
+                code += get_reg_number(split[1][1], line_numbers[index]) # Register value
+                code += "010\n"
+                code += "010" # Command value
+                code += get_reg_number(split[2][1], line_numbers[index]) # Register value
+                code += "011"
+                line_num += 2
+        
         # halfset XXXX
         if (split[0].casefold() == "halfset".casefold()):
             # Checks for syntax errors
@@ -157,6 +306,25 @@ with open("Assembler/code.txt") as file:
             code += split[1][0:4]
 
             line_num += 1
+        
+        # set XXXXXXXX
+        if (split[0].casefold() == "set".casefold()):
+            # Checks for syntax errors
+            if len(split) < 2:
+                raise SyntaxError('Operation is incomplete on line ' + str(line_numbers[index]))
+            if re.search('^[01][01][01][01][01][01][01][01]$', split[1]) is None:
+                raise SyntaxError('Operation has invalid immediate value on line ' + str(line_numbers[index]))
+
+            # Writes the machine code line
+            code += "100" # Command value
+            code += "00"  # Gap
+            code += split[1][0:4]
+            code += '\n'
+            code += "100" # Command value
+            code += "00"  # Gap
+            code += split[1][4:8]
+
+            line_num += 2
         
         # and R# R#
         if (split[0].casefold() == "and".casefold()):

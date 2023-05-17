@@ -1,0 +1,81 @@
+# Sets r7 to 30
+set 00011110 # set r0 to 30
+move r0 r7   # moves r0 to r7
+
+# WHILE R7 < 30     (condition set at branch)
+
+# Load bytes 1 and 2 into r1 and r2
+whileloop: move r7 r0
+load r1
+increment r0
+load r2
+
+# This RXORs both bytes and stores the result in the last bit of r6
+rxor r1
+rshiftc r0
+lshiftc r6
+rxor r2
+rshiftc r0
+lshiftc r6
+rxor r6
+rshift0 r6
+rshift0 r6
+rshiftc r0
+lshiftc r6
+
+# We have two versions of this loop: VERIFICATION and RECOVERY
+    # VERIFICATION: If the rxor resulted in 0, there are either 0 or 2 corrupted bits, so we're just verifying whether or not the memory is valid.
+    # RECOVERY: If the rxor resulted in 1, there is 1 corrupted bit, so we're looking to find and correct that bit.
+
+# If r6 is 00000000, move to verification
+set 00000000
+move r0 r3
+beq r6 r3 verification
+
+# RECOVERY: This version of the loop recovers the correct output given that one byte is wrong.
+
+
+
+# VERIFICATION: This version of the loop checks that the bytes are valid.
+
+# Moves byte 2 into r0
+verification: move r2 r0
+
+# Moves bit 8 of byte 2 into r6
+rshiftc r0
+rshiftc r6
+
+# Moves bit 7 of byte 2 into r6
+rshiftc r0
+rshiftc r6
+
+# Moves bit 6 of byte 2 into r6
+rshiftc r0
+rshiftc r6
+
+# Moves bit 4 of byte 2 into r6
+rshift0 r0
+rshiftc r0
+rshiftc r6
+
+# Moves byte 1 into r0
+move r1 r0
+
+# Moves bit 8 of byte 1 into r6
+rshiftc r0
+rshiftc r6
+
+
+
+# r6 should now be 01010XXX
+# shift to the right to pad
+rshift0 r6
+rshift0 r6
+rshift0 r6
+
+# r6 should now be 00001010
+
+            # TODO: Need to find a way to branch here based on r6
+
+# Moves byte 2 into r0
+verification: move r2 r0

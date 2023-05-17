@@ -24,3 +24,5 @@ blt R1 R2 loop
 
 test: and r5 r6
 beq R3 R7 test
+
+set 10100101

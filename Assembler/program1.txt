@@ -1,0 +1,115 @@
+# R0 is destination register
+
+# R1 holds byte 1
+# R2 holds byte 2
+
+# R3 is free
+
+# R5 holds output byte
+
+# R6 holds input memory address
+# R7 holds output memory address
+
+setbranch whileloop 00000
+
+# Sets r6 to 0
+set 00000000
+move r0 r6
+
+# Sets r7 to 30
+set 00011110 # set r0 to 30
+move r0 r7   # moves r0 to r7
+
+# WHILE R7 < 30     (condition set at branch)
+
+# Load bytes 1 and 2 into r1 and r2
+whileloop: move r6 r0
+load r1
+increment r0
+load r2
+
+
+
+#   CODE TO FIND OUTPUT BYTE 1
+
+# Move byte 1 into r5 as an output byte
+move r1 r5
+
+# Move byte 2 into r0
+move r2 r0
+
+# Move b8 into r5
+lshiftc r0
+lshiftc r5
+
+# Move b7 into r5
+lshiftc r0
+lshiftc r5
+
+# Move b6 into r5
+lshiftc r0
+lshiftc r5
+
+# Move b5 into r5
+lshiftc r0
+lshiftc r5
+
+# move 0 into r5
+lshift0 r5
+
+#   OUTPUT BYTE 1 is COMPLETE! Load into output the increment output address for next byte
+move r7 r0
+store r5
+increment r7
+
+
+
+#   CODE TO FIND OUTPUT BYTE 2
+
+# Move byte 2 into r0
+move r2 r0
+
+# Move b4 into r5
+lshift0 r0
+lshift0 r0
+lshift0 r0
+lshift0 r0
+lshiftc r0
+lshiftc r5
+
+# Move b3 into r5
+lshiftc r0
+lshiftc r5
+
+# Move b2 into r5
+lshiftc r0
+lshiftc r5
+
+# Move 1 into r5
+lshift1 r5
+
+# Move b1 into r5
+lshiftc r0
+lshiftc r5
+
+# Move 0 into r5
+lshift0 r5
+
+# Move 1 into r5
+lshift1 r5
+
+# Move 0 into r5
+lshift0 r5
+
+#   OUTPUT BYTE 2 is COMPLETE! Load into output the increment output address for next byte
+move r7 r0
+store r5
+increment r7
+increment r6
+
+# Set r3 to 30
+set 00011110
+move r0 r3
+
+# If r6 is less than 30, repeat the loop
+blt r6 r3 whileloop
