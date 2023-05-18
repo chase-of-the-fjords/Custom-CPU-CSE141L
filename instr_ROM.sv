@@ -3,6 +3,7 @@ module instr_ROM #(parameter D=12)(
     output logic[8:0] mach_code);
     
     logic[8:0] core[2**D];
+	 
     initial
         $readmemb("mach_code.txt", core);
 

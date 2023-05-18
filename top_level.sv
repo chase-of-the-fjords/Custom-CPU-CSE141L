@@ -5,17 +5,16 @@ module top_level(
     );
 
     parameter   D = 12,             // program counter width
-                A = 3;             	// ALU command bit width
+                A = 3,             	// ALU command bit width
                 R = 3;              // register bit width
 
     wire[D-1:0] target, 			// jump address
                 prog_ctr;
 
-    wire[7:0]   datA, datB, dat0	// from RegFile
+    wire[7:0]   datA, datB, dat0,	// from RegFile
                 NonRegData,         // data from ALU or data memory
                 RegData,            // data from register file
                 RegDataIn,          // true data into register file
-                immed,
                 dmOut;              // data memory output
     
     wire[R-1:0] RegDes;
@@ -23,7 +22,7 @@ module top_level(
     wire branchEnable;      
 
     // ALU outputs
-    wire[7:0] rslt,         // alu output
+    wire[7:0] rslt;         // alu output
     logic   sc_o,           // carry out from shift
             notequal,
             lessthan;
@@ -35,13 +34,15 @@ module top_level(
     wire    RegDst,
             Branch,                   // absolute branching
             MemWrite,
-            RegWrite
+            RegWrite,
             MemtoReg,
             RegtoReg;
     
     wire[8:0]   mach_code;            // machine code
     wire[A-1:0] alu_cmd;                  
-    wire[R-1:0] rd_addrA, rd_adrB;    // address pointers to reg_file
+    wire[R-1:0] rd_addrA, rd_addrB;    // address pointers to reg_file
+	 wire[3:0]   immed;
+	 wire [2:0]  typeselect;
 
     // machine code breakdown
     assign alu_cmd  = mach_code[8:6];
@@ -101,7 +102,7 @@ module top_level(
 
     
     alu alu1(
-            .alu_cmd(),
+            .alu_cmd,
             .inA(datA),
             .inB(datB),
             .sc_in,                      
