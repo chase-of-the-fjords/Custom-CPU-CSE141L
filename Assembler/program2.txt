@@ -12,7 +12,6 @@ setbranch skip_b8_inversion 01011
 setbranch skip_b9_inversion 01100
 setbranch skip_b10_inversion 01101
 setbranch skip_b11_inversion 01110
-setbranch exit 01111
 
 # Sets r7 to 30
 set 00011110 # set r0 to 30
@@ -545,7 +544,7 @@ increment r7
 set 00001110
 move r0 r5
 blt r6 r5 whileloop
-beq r0 r0 exit
+done
 
 
 
@@ -811,7 +810,7 @@ increment r7
 set 00001110
 move r0 r5
 blt r6 r5 whileloop
-beq r0 r0 exit
+done
 
 
 # INVALID MESSAGE:
@@ -833,7 +832,4 @@ increment r7
 set 00001110
 move r0 r5
 blt r6 r5 whileloop
-beq r0 r0 exit
-
-# To make sure nothing runs when it shouldn't
-exit: set 00000000
+done

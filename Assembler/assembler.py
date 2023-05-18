@@ -31,7 +31,10 @@ machine_code = []
 
 line_num = 0
 
-with open("Assembler/program2.txt") as file:
+input_file = "Assembler/program1.txt"
+output_file = "Assembler/mach_code_p1.txt"
+
+with open(input_file) as file:
     for line in file:
         line_num += 1
         line = line.rstrip()
@@ -74,7 +77,7 @@ with open("Assembler/program2.txt") as file:
             # Writes the machine code line
             code += "000" # Command value
             code += get_reg_number(split[1][1], line_numbers[index]) # Register value
-            code += "000"
+            code += "111" # 000_000_000 corresponds to done flag
 
             line_num += 1
 
@@ -395,12 +398,19 @@ with open("Assembler/program2.txt") as file:
 
             line_num += 3
 
+        # done
+        if (split[0].casefold() == "done".casefold()):
+            # Adds the done flag code
+            code += "000000000"
+
+            line_num += 1
+
         print(line)
         if (code != ""):
             print(code)
             machine_code.append(code)
 
-f = open("Assembler/machine_code.txt", "w")
+f = open(output_file, "w")
 
 for index, line in enumerate(machine_code):
     if (index != 0): f.write('\n')
