@@ -74,8 +74,8 @@ module top_level(
 
     // control decoder
     Control ctl1(
-            .instr(mach_code[8:6]),
-            .typeselect(mach_code[1:0]),
+            .instr(alu_cmd),
+            .typeselect,
             .RegDst, 
             .Branch, 
             .MemWrite,
