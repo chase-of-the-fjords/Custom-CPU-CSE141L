@@ -12,9 +12,6 @@ module alu(
                     lessthan
     );
 
-    logic[1:0] memselect;
-    assign memselect = typeselect[1:0];
-
     always_comb begin
         // default values
         rslt = 8'b0;            
@@ -47,20 +44,7 @@ module alu(
                 endcase
             end
             3'b010: begin // mem - memory
-                case(memselect) 
-                    2'b00: begin // load from memory using address R0
-                        // same as default; ALU does nothing
-                    end  
-                    2'b01: begin // store into memory using address R0
-                        // same as default
-                    end
-                    2'b10: begin // move RA into R0
-                        rslt = inA;
-                    end  
-                    2'b11: begin // move R0 into RA
-                        rslt = 
-                    end
-                endcase
+                // same as default
             end
             3'b011: begin // bneq - branch not equal
                 if (inA !== inB)
@@ -77,7 +61,7 @@ module alu(
                     lessthan = 1;
             end
             3'b111: begin // not used (no op)
-                //
+                // same as default
             end
 
             default: // no op
