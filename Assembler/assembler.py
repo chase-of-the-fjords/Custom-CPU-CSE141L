@@ -31,7 +31,7 @@ machine_code = []
 
 line_num = 0
 
-with open("Assembler/program1.txt") as file:
+with open("Assembler/program2.txt") as file:
     for line in file:
         line_num += 1
         line = line.rstrip()
@@ -343,8 +343,8 @@ with open("Assembler/program1.txt") as file:
 
             line_num += 1
 
-        # beq R# R# branch
-        if (split[0].casefold() == "beq".casefold()):
+        # bneq R# R# branch
+        if (split[0].casefold() == "bneq".casefold()):
             # Checks for syntax errors
             if len(split) < 4:
                 raise SyntaxError('Operation is incomplete on line ' + str(line_numbers[index]))
