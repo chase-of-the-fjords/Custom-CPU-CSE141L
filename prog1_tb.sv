@@ -9,23 +9,25 @@
 //    
 module prog1_tb();
 
-bit   clk    ,                   // clock source -- drives DUT input of same name
+logic   clk    ,                   // clock source -- drives DUT input of same name
 	  req  ;	                 // req -- start program -- drives DUT input
 wire  done;		    	         // ack -- from DUT -- done w/ program
 
 // program 1-specific variables
-bit  [11:1] d1_in[15];           // original messages
-bit         p0, p8, p4, p2, p1;  // Hamming block parity bits
-bit  [15:0] d1_out[15];          // orig messages w/ parity inserted
-bit  [15:0] score1, case1;
+logic  [11:1] d1_in[15];           // original messages
+logic         p0, p8, p4, p2, p1;  // Hamming block parity bits
+logic  [15:0] d1_out[15];          // orig messages w/ parity inserted
+logic  [15:0] score1, case1;
 
 // your device goes here
 // change "top_level" if you called your device something different
 // explicitly list ports if your names differ from test bench's
 // if you used any parameters, override them here
-top_level DUT(.clk, .start, .ack);            // replace "proc" with the name of your top level module
+top_level DUT(.clk, .reset(req), .done);            // replace "proc" with the name of your top level module
 
 initial begin
+    case1 = 0;
+    score1 = 0;
   for(int i=0;i<15;i++)	begin
     d1_in[i] = $random>>4;        // create 15 messages	   '1    '0
 // copy 15 original messages into first 30 bytes of memory 
@@ -68,4 +70,3 @@ always begin
 end										
 
 endmodule
-										   

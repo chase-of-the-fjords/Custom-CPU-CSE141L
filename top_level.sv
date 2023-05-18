@@ -1,6 +1,6 @@
 // top level design
 module top_level(
-    input clk, reset, req, 
+    input clk, reset, 
     output logic done
     );
 
@@ -42,8 +42,8 @@ module top_level(
     wire[8:0]   mach_code;            // machine code
     wire[A-1:0] alu_cmd;                  
     wire[R-1:0] rd_addrA, rd_addrB;    // address pointers to reg_file
-	 wire[3:0]   immed;
-	 wire [2:0]  typeselect;
+    wire[3:0]   immed;
+    wire [2:0]  typeselect;
 
     // machine code breakdown
     assign alu_cmd  = mach_code[8:6];

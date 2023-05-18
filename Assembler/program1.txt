@@ -3,7 +3,7 @@
 # R1 holds byte 1
 # R2 holds byte 2
 
-# R3 is free
+# R3:4 are free
 
 # R5 holds output byte
 
@@ -12,8 +12,9 @@
 
 setbranch whileloop 00000
 
-# Sets r6 to 0
+# Sets r5 & r6 to 0
 set 00000000
+move r0 r5
 move r0 r6
 
 # Sets r7 to 30
@@ -54,8 +55,10 @@ lshiftc r5
 lshiftc r0
 lshiftc r5
 
-# move 0 into r5
-lshift0 r5
+# Find p8 and move into r5
+rxor r5
+rshiftc r0
+lshiftc r5
 
 #   OUTPUT BYTE 1 is COMPLETE! Load into output the increment output address for next byte
 move r7 r0
