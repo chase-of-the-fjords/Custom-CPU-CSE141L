@@ -8,7 +8,8 @@ module Control #(parameter opwidth = 3, mcodebits = 3)(
                     MemWrite,
                     RegWrite, 
                     MemtoReg,
-                    RegtoReg
+                    RegtoReg,
+                    SinChange
     );
 
     logic[1:0] memselect;
@@ -22,13 +23,25 @@ module Control #(parameter opwidth = 3, mcodebits = 3)(
         RegWrite = 1;       // 0: for store, branching, no op  1: other operations 
         MemtoReg = 0;       // 0: ALU to reg_file; 1: memory to reg_file (load)
         RegtoReg = 0;       // 0: normal data flow; 1: moving data from reg to reg
+        SinChange = 0;      // 0: non carry-in instructions 1: carry-in instructions
         
         case(instr)    // override defaults with exceptions
             3'b000: begin // rxor - reduction xor
                 // same as default
             end
             3'b001: begin // shift
-                RegDst = 1;
+                case(typeselect)
+                    3'b100: begin// shift left with carry in
+                        SinChange = 1;
+							RegDst = 1;
+						  end
+                    3'b101: begin // shift right with carry in
+                        SinChange = 1;
+							RegDst = 1;
+						  end
+                    default:
+							RegDst = 1;
+                endcase
             end
             3'b010: begin // mem - memory
                 case(memselect) 

@@ -36,7 +36,8 @@ module top_level(
             MemWrite,
             RegWrite,
             MemtoReg,
-            RegtoReg;
+            RegtoReg,
+            SinChange;
     
     wire[8:0]   mach_code;            // machine code
     wire[A-1:0] alu_cmd;                  
@@ -73,14 +74,15 @@ module top_level(
 
     // control decoder
     Control ctl1(
-            .instr(mach_code[8:6]),
-            .typeselect(mach_code[1:0]),
+            .instr(alu_cmd),
+            .typeselect,
             .RegDst, 
             .Branch, 
             .MemWrite,
             .RegWrite,     
             .MemtoReg,
-            .RegtoReg);                     // enable reg to reg move
+            .RegtoReg,              // enable reg to reg move
+            .SinChange);            // enable carry in to change          
 
     assign NonRegData = MemtoReg ? dmOut : rslt;        // data for standard operation
     assign RegData = !RegDst ? datA : dat0;             // data for reg to reg moves
@@ -126,8 +128,10 @@ module top_level(
     always_ff @(posedge clk) begin
         if (reset)
             sc_in <= 1'b0;
-        else
+        else if (SinChange)
             sc_in <= sc_o;
+        else
+            sc_in <= sc_in;
     end
 
     assign done = prog_ctr == 128; // EDIT
