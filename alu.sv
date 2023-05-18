@@ -47,7 +47,7 @@ module alu(
                 // same as default
             end
             3'b011: begin // bneq - branch not equal
-                if (inA !== inB)
+                if (inA != inB)
                     notequal = 1;
             end
             3'b100: begin // halfset

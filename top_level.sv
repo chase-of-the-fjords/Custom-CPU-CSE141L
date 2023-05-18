@@ -134,6 +134,6 @@ module top_level(
             sc_in <= sc_in;
     end
 
-    assign done = prog_ctr == 128; // EDIT
+    assign done = (mach_code == 0);
  
 endmodule
