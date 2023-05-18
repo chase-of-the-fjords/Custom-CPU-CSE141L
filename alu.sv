@@ -17,7 +17,7 @@ module alu(
         rslt = 8'b0;            
         sc_o = 1'b0;    
         notequal = 1'b0;
-        lessthan = 1'b0
+        lessthan = 1'b0;
 
         case(alu_cmd)
             3'b000: begin // xor
