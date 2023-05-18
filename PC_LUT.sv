@@ -5,7 +5,7 @@ module PC_LUT #(parameter D=12)(
     
     always_comb begin
         case(addr)
-            0: target = 6;
+            0: target = 7;
 	        1: target = 6;
 	        2: target = 503;
             3: target = 328;

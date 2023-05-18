@@ -3,7 +3,9 @@
 # R1 holds byte 1
 # R2 holds byte 2
 
-# R3:4 are free
+# R3 is free
+
+# R4 holds the 5 parity bits
 
 # R5 holds output byte
 
@@ -28,6 +30,181 @@ whileloop: move r6 r0
 load r1
 increment r0
 load r2
+
+# GENERATE P8 (b11:5)
+
+# Load bytes 1 & 2
+move r6 r0
+load r1
+increment r0
+load r2
+
+# Shift bits from byte 1
+rshiftc r1 # b9
+lshiftc r3
+rshiftc r1 # b10
+lshiftc r3
+rshiftc r1 # b11
+lshiftc r3
+
+# Shift bits from byte 2
+lshiftc r2 # b8
+lshiftc r3
+lshiftc r2 # b7
+lshiftc r3
+lshiftc r2 # b6
+lshiftc r3
+lshiftc r2 # b5
+lshiftc r3
+lshiftc r2 # b4
+lshiftc r2 # b3
+lshiftc r2 # b2
+lshiftc r2 # b1
+
+# RXOR the bits in r3, shift the parity bit into r4
+rxor r3
+rshiftc r0
+lshiftc r4
+
+
+# GENERATE P4 (b11:8,4,3,2)
+
+# Load bytes 1 & 2
+move r6 r0
+load r1
+increment r0
+load r2
+
+# Shift bits from byte 1
+rshiftc r1 # b9
+lshiftc r3
+rshiftc r1 # b10
+lshiftc r3
+rshiftc r1 # b11
+lshiftc r3
+
+# Shift bits from byte 2
+lshiftc r2 # b8
+lshiftc r3
+lshiftc r2 # b7
+lshiftc r2 # b6
+lshiftc r2 # b5
+lshiftc r2 # b4
+lshiftc r3
+lshiftc r2 # b3
+lshiftc r3
+lshiftc r2 # b2
+lshiftc r3
+lshiftc r2 # b1
+
+# RXOR the bits in r3, shift the parity bit into r4
+rxor r3
+rshiftc r0
+lshiftc r4
+
+
+
+# GENERATE P2 (b11,10,7,6,4,3,1)
+
+# Load bytes 1 & 2
+move r6 r0
+load r1
+increment r0
+load r2
+
+# Shift bits from byte 1
+rshiftc r1 # b9
+rshiftc r1 # b10
+lshiftc r3
+rshiftc r1 # b11
+lshiftc r3
+
+# Shift bits from byte 2
+lshiftc r2 # b8
+lshiftc r2 # b7
+lshiftc r3
+lshiftc r2 # b6
+lshiftc r3
+lshiftc r2 # b5
+lshiftc r2 # b4
+lshiftc r3
+lshiftc r2 # b3
+lshiftc r3
+lshiftc r2 # b2
+lshiftc r2 # b1
+lshiftc r3
+
+# RXOR the bits in r3, shift the parity bit into r4
+rxor r3
+rshiftc r0
+lshiftc r4
+
+
+
+# GENERATE P1 (11,9,7,5,4,2,1)
+
+# Load bytes 1 & 2
+move r6 r0
+load r1
+increment r0
+load r2
+
+# Shift bits from byte 1
+rshiftc r1 # b9
+lshiftc r3
+rshiftc r1 # b10
+rshiftc r1 # b11
+lshiftc r3
+
+# Shift bits from byte 2
+lshiftc r2 # b8
+lshiftc r2 # b7
+lshiftc r3
+lshiftc r2 # b6
+lshiftc r2 # b5
+lshiftc r3
+lshiftc r2 # b4
+lshiftc r3
+lshiftc r2 # b3
+lshiftc r2 # b2
+lshiftc r3
+lshiftc r2 # b1
+lshiftc r3
+
+# RXOR the bits in r3, shift the parity bit into r4
+rxor r3
+rshiftc r0
+lshiftc r4
+
+
+
+# GENERATE P0
+
+# Load bytes 1 & 2
+move r6 r0
+load r1
+increment r0
+load r2
+
+# Shift XOR of parity bits into byte 1
+rxor r4
+rshiftc r0
+lshiftc r1
+
+# Shift XOR of byte 2 into byte 1
+rxor r2
+rshiftc r0
+lshiftc r1
+
+# Shift XOR of byte 1 as parity bit
+rxor r1
+rshiftc r0
+lshiftc r4
+
+# PARITY BITS COMPLETE IN R4 (XXX84210). Move to left.
+lshift0 r4
+lshift0 r4
+lshift0 r4
 
 
 
@@ -55,9 +232,8 @@ lshiftc r5
 lshiftc r0
 lshiftc r5
 
-# Find p8 and move into r5
-rxor r5
-rshiftc r0
+# Move p8 into r5
+lshiftc r4
 lshiftc r5
 
 #   OUTPUT BYTE 1 is COMPLETE! Load into output the increment output address for next byte
@@ -88,21 +264,25 @@ lshiftc r5
 lshiftc r0
 lshiftc r5
 
-# Move 1 into r5
-lshift1 r5
+# Move p4 into r5
+lshiftc r4
+lshiftc r5
 
 # Move b1 into r5
 lshiftc r0
 lshiftc r5
 
-# Move 0 into r5
-lshift0 r5
+# Move p2 into r5
+lshiftc r4
+lshiftc r5
 
-# Move 1 into r5
-lshift1 r5
+# Move p1 into r5
+lshiftc r4
+lshiftc r5
 
-# Move 0 into r5
-lshift0 r5
+# Move p0 into r5
+lshiftc r4
+lshiftc r5
 
 #   OUTPUT BYTE 2 is COMPLETE! Load into output the increment output address for next byte
 move r7 r0

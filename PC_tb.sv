@@ -41,7 +41,7 @@ module PC_tb #(parameter D=12);
         absjump_en = 1;
         dat0 = 0;
         #10;
-        assert (prog_ctr == 6) $display("jump to branch 0 passed");
+        assert (prog_ctr == 7) $display("jump to branch 0 passed");
 
         // jump to branch 18
         reset = 1;
