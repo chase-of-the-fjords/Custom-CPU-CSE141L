@@ -34,7 +34,6 @@ module reg_file #(parameter pw=3)(
     always @(posedge clk) begin
         if(wr_en) begin				   // anything but stores or no ops
             core[wr_addr] <= dat_in;
-            $display("writing %d into register %d",dat_in,wr_addr);
         end
     end 
 

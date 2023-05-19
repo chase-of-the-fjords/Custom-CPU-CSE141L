@@ -27,17 +27,17 @@ move r0 r7   # moves r0 to r7
 
 # Load bytes 1 and 2 into r1 and r2
 whileloop: move r6 r0
-load r1
-increment r0
 load r2
+increment r0
+load r1
 
 # GENERATE P8 (b11:5)
 
 # Load bytes 1 & 2
 move r6 r0
-load r1
-increment r0
 load r2
+increment r0
+load r1
 
 # Shift bits from byte 1
 rshiftc r1 # b9
@@ -71,9 +71,9 @@ lshiftc r4
 
 # Load bytes 1 & 2
 move r6 r0
-load r1
-increment r0
 load r2
+increment r0
+load r1
 
 # Shift bits from byte 1
 rshiftc r1 # b9
@@ -108,9 +108,9 @@ lshiftc r4
 
 # Load bytes 1 & 2
 move r6 r0
-load r1
-increment r0
 load r2
+increment r0
+load r1
 
 # Shift bits from byte 1
 rshiftc r1 # b9
@@ -145,9 +145,9 @@ lshiftc r4
 
 # Load bytes 1 & 2
 move r6 r0
-load r1
-increment r0
 load r2
+increment r0
+load r1
 
 # Shift bits from byte 1
 rshiftc r1 # b9
@@ -182,9 +182,9 @@ lshiftc r4
 
 # Load bytes 1 & 2
 move r6 r0
-load r1
-increment r0
 load r2
+increment r0
+load r1
 
 # Shift XOR of parity bits into byte 1
 rxor r4
@@ -208,38 +208,12 @@ lshift0 r4
 
 
 
-#   CODE TO FIND OUTPUT BYTE 1
+# Load bytes 1 & 2
+move r6 r0
+load r2
+increment r0
+load r1
 
-# Move byte 1 into r5 as an output byte
-move r1 r5
-
-# Move byte 2 into r0
-move r2 r0
-
-# Move b8 into r5
-lshiftc r0
-lshiftc r5
-
-# Move b7 into r5
-lshiftc r0
-lshiftc r5
-
-# Move b6 into r5
-lshiftc r0
-lshiftc r5
-
-# Move b5 into r5
-lshiftc r0
-lshiftc r5
-
-# Move p8 into r5
-lshiftc r4
-lshiftc r5
-
-#   OUTPUT BYTE 1 is COMPLETE! Load into output the increment output address for next byte
-move r7 r0
-store r5
-increment r7
 
 
 
@@ -288,7 +262,46 @@ lshiftc r5
 move r7 r0
 store r5
 increment r7
+
+
+
+
+#   CODE TO FIND OUTPUT BYTE 1
+
+# Move byte 1 into r5 as an output byte
+move r1 r5
+
+# Move byte 2 into r0
+move r2 r0
+
+# Move b8 into r5
+lshiftc r0
+lshiftc r5
+
+# Move b7 into r5
+lshiftc r0
+lshiftc r5
+
+# Move b6 into r5
+lshiftc r0
+lshiftc r5
+
+# Move b5 into r5
+lshiftc r0
+lshiftc r5
+
+# Move p8 into r5
+lshiftc r4
+lshiftc r5
+
+#   OUTPUT BYTE 1 is COMPLETE! Load into output the increment output address for next byte
+move r7 r0
+store r5
+increment r7
 increment r6
+increment r6
+
+
 
 # Set r3 to 30
 set 00011110

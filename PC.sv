@@ -9,7 +9,6 @@ module PC #(parameter D=12)(
 );
 
 always_ff @(posedge clk) begin
-    $display("line %d", prog_ctr);
     if(reset)
 	    prog_ctr <= 1'b0;
     else if(absjump_en)

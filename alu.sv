@@ -52,7 +52,6 @@ module alu(
             end
             3'b100: begin // halfset
                 rslt = {in0[3:0], immed};
-                $display("%d", rslt);
             end
             3'b101: begin // and - bitwise AND
                 rslt = inA & inB;

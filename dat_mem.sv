@@ -15,7 +15,6 @@ module dat_mem (
     // writes are sequential (clocked) -- occur on stores or pushes 
     always @(posedge clk) begin
         if(wr_en) begin
-            $display("writing into addr %d", addr);
             core[addr] = dat_in;
         end
     end 

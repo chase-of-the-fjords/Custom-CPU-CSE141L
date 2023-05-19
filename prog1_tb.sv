@@ -48,6 +48,8 @@ initial begin
     p1 = d1_in[i][11]^d1_in[i][ 9]^d1_in[i][7]^d1_in[i][5]^d1_in[i][4]^d1_in[i][2]^d1_in[i][1];
     p0 = ^d1_in[i]^p8^p4^p2^p1;  // overall parity (16th bit)
 // assemble output (data with parity embedded)
+    $writeb   (DUT.dm1.core[1+2*i]);
+    $displayb (DUT.dm1.core[2*i]);
     $displayb ({d1_in[i][11:5],p8,d1_in[i][4:2],p4,d1_in[i][1],p2,p1,p0});
     $writeb  (DUT.dm1.core[31+2*i]);
     $displayb(DUT.dm1.core[30+2*i]);

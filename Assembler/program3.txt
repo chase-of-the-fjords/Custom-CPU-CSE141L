@@ -28,7 +28,7 @@ move r0 r7
 # Clears mems 33:35
 set 00000000
 move r0 r4
-set 00010001
+set 00100001
 store r4
 increment r0
 store r4
@@ -36,7 +36,7 @@ increment r0
 store r4
 
 # Loads mem 32 into r6
-set 00010000
+set 00100000
 load r6
 
 # Moves to last 5 bits
@@ -76,7 +76,7 @@ move r0 r1
 bneq r1 r6 skip_match
 
 # Increment [35]
-set 00010011
+set 00100011
 load r4
 increment r4
 store r4
@@ -85,12 +85,12 @@ store r4
 set 00000100
 and r0 r7
 move r0 r4
-set 00000100
+set 00000000
 move r0 r5
 bneq r4 r5 skip_match
 
 # Increment [33]
-set 00010001
+set 00100001
 load r4
 increment r4
 store r4
@@ -114,7 +114,7 @@ move r0 r5
 bneq r4 r5 skip_new_byte
 
 # Increment [34]
-set 00010010
+set 00100010
 load r4
 increment r4
 store r4
@@ -134,11 +134,14 @@ move r0 r4
 set 00000000
 move r0 r5
 
+# Reset r3
+move r0 r3
+
 # IF THE LAST 4 BYTES ARE 0000
 bneq r4 r5 skip_new_byte
 
 # Decrement [34]
-set 00010010
+set 00100010
 load r4
 decrement r4
 store r4
