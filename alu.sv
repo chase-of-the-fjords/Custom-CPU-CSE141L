@@ -1,7 +1,7 @@
 // ALU
 module alu(
     input[2:0] alu_cmd,         // ALU instructions
-    input[7:0] inA, inB,	    // 8-bit wide data path
+    input[7:0] inA, inB, in0,   // 8-bit wide data path
     input      sc_in,           // shift_carry in
     input[2:0] typeselect,
     input[3:0] immed,
@@ -51,7 +51,8 @@ module alu(
                     notequal = 1;
             end
             3'b100: begin // halfset
-                rslt = {inA[3:0], immed};
+                rslt = {in0[3:0], immed};
+                $display("%d", rslt);
             end
             3'b101: begin // and - bitwise AND
                 rslt = inA & inB;

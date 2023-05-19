@@ -13,8 +13,11 @@ module dat_mem (
     assign dat_out = core[addr];
 
     // writes are sequential (clocked) -- occur on stores or pushes 
-    always_ff @(posedge clk)
-        if(wr_en)		
-            core[addr] <= dat_in; 
+    always @(posedge clk) begin
+        if(wr_en) begin
+            $display("writing into addr %d", addr);
+            core[addr] = dat_in;
+        end
+    end 
 
 endmodule

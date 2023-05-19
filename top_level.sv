@@ -107,6 +107,7 @@ module top_level(
             .alu_cmd,
             .inA(datA),
             .inB(datB),
+            .in0(dat0),
             .sc_in,                      
             .typeselect,
             .immed,

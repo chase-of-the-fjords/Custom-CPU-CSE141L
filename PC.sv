@@ -8,12 +8,14 @@ module PC #(parameter D=12)(
     output logic[D-1:0] prog_ctr
 );
 
-always_ff @(posedge clk)
+always_ff @(posedge clk) begin
+    $display("line %d", prog_ctr);
     if(reset)
 	    prog_ctr <= 1'b0;
     else if(absjump_en)
 	    prog_ctr <= target;
 	else
 	    prog_ctr <= prog_ctr + 1'b1;
+end
 
 endmodule
