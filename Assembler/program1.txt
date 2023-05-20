@@ -97,6 +97,9 @@ lshiftc r2 # b2
 lshiftc r3
 lshiftc r2 # b1
 
+# Shift in a 0 just in case
+lshift0 r3
+
 # RXOR the bits in r3, shift the parity bit into r4
 rxor r3
 rshiftc r0
@@ -133,6 +136,9 @@ lshiftc r3
 lshiftc r2 # b2
 lshiftc r2 # b1
 lshiftc r3
+
+# Shift in a 0 just in case
+lshift0 r3
 
 # RXOR the bits in r3, shift the parity bit into r4
 rxor r3
@@ -171,6 +177,9 @@ lshiftc r3
 lshiftc r2 # b1
 lshiftc r3
 
+# Shift in a 0 just in case
+lshift0 r3
+
 # RXOR the bits in r3, shift the parity bit into r4
 rxor r3
 rshiftc r0
@@ -187,7 +196,9 @@ increment r0
 load r1
 
 # Shift XOR of parity bits into byte 1
-rxor r4
+set 00001111
+and r4 r0
+rxor r0
 rshiftc r0
 lshiftc r1
 
@@ -208,16 +219,59 @@ lshift0 r4
 
 
 
+
+
+#   CODE TO FIND OUTPUT BYTE 1
+
 # Load bytes 1 & 2
 move r6 r0
 load r2
 increment r0
 load r1
 
+# Move byte 1 into r5 as an output byte
+move r1 r5
+
+# Move byte 2 into r0
+move r2 r0
+
+# Move b8 into r5
+lshiftc r0
+lshiftc r5
+
+# Move b7 into r5
+lshiftc r0
+lshiftc r5
+
+# Move b6 into r5
+lshiftc r0
+lshiftc r5
+
+# Move b5 into r5
+lshiftc r0
+lshiftc r5
+
+# Move p8 into r5
+lshiftc r4
+lshiftc r5
+
+#   OUTPUT BYTE 1 is COMPLETE! Load into output the increment output address for next byte
+move r7 r0
+increment r0
+store r5
+
+
+
 
 
 
 #   CODE TO FIND OUTPUT BYTE 2
+
+# Load bytes 1 & 2
+move r6 r0
+load r2
+increment r0
+load r1
 
 # Move byte 2 into r0
 move r2 r0
@@ -262,41 +316,6 @@ lshiftc r5
 move r7 r0
 store r5
 increment r7
-
-
-
-
-#   CODE TO FIND OUTPUT BYTE 1
-
-# Move byte 1 into r5 as an output byte
-move r1 r5
-
-# Move byte 2 into r0
-move r2 r0
-
-# Move b8 into r5
-lshiftc r0
-lshiftc r5
-
-# Move b7 into r5
-lshiftc r0
-lshiftc r5
-
-# Move b6 into r5
-lshiftc r0
-lshiftc r5
-
-# Move b5 into r5
-lshiftc r0
-lshiftc r5
-
-# Move p8 into r5
-lshiftc r4
-lshiftc r5
-
-#   OUTPUT BYTE 1 is COMPLETE! Load into output the increment output address for next byte
-move r7 r0
-store r5
 increment r7
 increment r6
 increment r6
