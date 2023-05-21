@@ -50,7 +50,7 @@ module PC_tb #(parameter D=12);
         absjump_en = 1;
         dat0 = 18;
         #10;
-        assert (prog_ctr == 101) $display("jump to branch 18 passed");
+        assert (prog_ctr == 102) $display("jump to branch 18 passed");
 
         // jump to branch 18, then wait 10 cycles
         reset = 1;
@@ -61,7 +61,10 @@ module PC_tb #(parameter D=12);
         #10;
         absjump_en = 0;
         #100;
-        assert (prog_ctr == 111) $display("jump to branch 18 then wait passed");
+        assert (prog_ctr == 112) $display("jump to branch 18 then wait passed");
+
+        // terminate simulation
+        $finish();
     end
 
     always begin

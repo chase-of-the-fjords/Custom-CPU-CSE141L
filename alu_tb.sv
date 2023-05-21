@@ -134,7 +134,7 @@ module alu_tb;
         inA = 8'b11111110;
         #1;
         assert (rslt == 8'b11111101) $display("decrement passed");
-            else $display("rslt = %b", rslt);
+            else $display("rslt = %b // wrap around", rslt);
         #10; // 11111101
 
         // increment
@@ -245,6 +245,8 @@ module alu_tb;
         alu_cmd = 3'b111;
         #10;
         
+        // terminate simulation
+        $finish();
     end
 
 endmodule
