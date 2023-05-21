@@ -9,7 +9,7 @@
 //    
 module prog2_tb();
 
-bit   clk   ,                    // clock source -- drives DUT input of same name
+logic   clk   ,                    // clock source -- drives DUT input of same name
 	  req   ;	                 // req -- start program -- drives DUT input
 wire  done;		    	         // ack -- from DUT -- done w/ program
 
@@ -32,7 +32,7 @@ bit  [15:0] score2, case2;
 
 // your device goes here
 // explicitly list ports if your names differ from test bench's
-top_level DUT(.clk, .start, .done);	 // replace "top_level" with the name of your top level module
+top_level DUT(.clk, .reset(req), .done);	 // replace "top_level" with the name of your top level module
 
 initial begin
 // generate parity from random 11-bit messages 
@@ -63,6 +63,7 @@ initial begin
   $display();
   for(int i=0; i<15; i++) begin
     $displayb({5'b0,d2_in[i]});
+    $displayb  (d2_bad[i]);
     $writeb  (DUT.dm1.core[1+2*i]);
     $displayb(DUT.dm1.core[0+2*i]);
     if(flip2[i][5:4]) begin :sgl_err                           // single error scenario

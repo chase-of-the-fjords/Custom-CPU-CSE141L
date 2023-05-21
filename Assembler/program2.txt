@@ -1,835 +1,847 @@
+# R0 is destination register
+
+# R1 holds byte 1
+# R2 holds byte 2
+
+# R3 is free
+
+# R4 holds the 5 parity bits
+
+# R5 holds output byte
+
+# R6 holds input memory address
+# R7 holds output memory address
+
 setbranch whileloop 00001
-setbranch invalid_message 00010
-setbranch verification 00011
-setbranch skip_b1_inversion 00100
-setbranch skip_b2_inversion 00101
-setbranch skip_b3_inversion 00110
-setbranch skip_b4_inversion 00111
-setbranch skip_b5_inversion 01000
-setbranch skip_b6_inversion 01001
-setbranch skip_b7_inversion 01010
-setbranch skip_b8_inversion 01011
-setbranch skip_b9_inversion 01100
-setbranch skip_b10_inversion 01101
-setbranch skip_b11_inversion 01110
+setbranch recovery 00010
+setbranch invalid_output 00011
+
+setbranch skip_b11 00100
+setbranch skip_b10 00101
+setbranch skip_b9 00110
+setbranch skip_b8 00111
+setbranch skip_b7 01000
+setbranch skip_b6 01001
+setbranch skip_b5 01010
+setbranch skip_b4 01011
+setbranch skip_b3 01100
+setbranch skip_b2 01101
+setbranch skip_b1 01110
+
+# Sets r5 & r6 to 0
+set 00000000
+move r0 r5
+move r0 r6
 
 # Sets r7 to 30
 set 00011110 # set r0 to 30
 move r0 r7   # moves r0 to r7
 
-# Sets r6 to 0
-set 00000000 # set r0 to 0
-move r0 r6   # moves r0 to r6
-
-# WHILE R6 < 30     (condition set at branch)
+# WHILE R7 < 30     (condition set at branch)
 
 # Load bytes 1 and 2 into r1 and r2
 whileloop: move r7 r0
-load r1
-increment r0
 load r2
+increment r0
+load r1
 
-# This RXORs both bytes and stores the result in the last bit of r5
+# Reset r4
+set 00000000
+move r0 r4
+
+
+
+# GENERATE P8 (b11:5)
+
+# Load bytes 1 & 2
+move r7 r0
+load r2
+increment r0
+load r1
+
+# Reset r3
+set 00000000
+move r0 r3
+
+# Shift bits from byte 1
+lshiftc r1 # b11
+lshiftc r3
+lshiftc r1 # b10
+lshiftc r3
+lshiftc r1 # b9
+lshiftc r3
+lshiftc r1 # b8
+lshiftc r3
+lshiftc r1 # b7
+lshiftc r3
+lshiftc r1 # b6
+lshiftc r3
+lshiftc r1 # b5
+lshiftc r3
+lshiftc r1 # p8
+
+# Shift bits from byte 2
+lshiftc r2 # b4
+lshiftc r2 # b3
+lshiftc r2 # b2
+lshiftc r2 # p4
+lshiftc r2 # b1
+lshiftc r2 # p2
+lshiftc r2 # p1
+lshiftc r2 # p0
+
+# RXOR the bits in r3, shift the parity bit into r4
+rxor r3
+rshiftc r0
+lshiftc r4
+
+
+# GENERATE P4 (b11:8,4,3,2)
+
+# Load bytes 1 & 2
+move r7 r0
+load r2
+increment r0
+load r1
+
+# Reset r3
+set 00000000
+move r0 r3
+
+# Shift bits from byte 1
+lshiftc r1 # b11
+lshiftc r3
+lshiftc r1 # b10
+lshiftc r3
+lshiftc r1 # b9
+lshiftc r3
+lshiftc r1 # b8
+lshiftc r3
+lshiftc r1 # b7
+lshiftc r1 # b6
+lshiftc r1 # b5
+lshiftc r1 # p8
+
+# Shift bits from byte 2
+lshiftc r2 # b4
+lshiftc r3
+lshiftc r2 # b3
+lshiftc r3
+lshiftc r2 # b2
+lshiftc r3
+lshiftc r2 # p4
+lshiftc r2 # b1
+lshiftc r2 # p2
+lshiftc r2 # p1
+lshiftc r2 # p0
+
+# RXOR the bits in r3, shift the parity bit into r4
+rxor r3
+rshiftc r0
+lshiftc r4
+
+
+
+# GENERATE P2 (b11,10,7,6,4,3,1)
+
+# Load bytes 1 & 2
+move r7 r0
+load r2
+increment r0
+load r1
+
+# Reset r3
+set 00000000
+move r0 r3
+
+# Shift bits from byte 1
+lshiftc r1 # b11
+lshiftc r3
+lshiftc r1 # b10
+lshiftc r3
+lshiftc r1 # b9
+lshiftc r1 # b8
+lshiftc r1 # b7
+lshiftc r3
+lshiftc r1 # b6
+lshiftc r3
+lshiftc r1 # b5
+lshiftc r1 # p8
+
+# Shift bits from byte 2
+lshiftc r2 # b4
+lshiftc r3
+lshiftc r2 # b3
+lshiftc r3
+lshiftc r2 # b2
+lshiftc r2 # p4
+lshiftc r2 # b1
+lshiftc r3
+lshiftc r2 # p2
+lshiftc r2 # p1
+lshiftc r2 # p0
+
+# RXOR the bits in r3, shift the parity bit into r4
+rxor r3
+rshiftc r0
+lshiftc r4
+
+
+
+# GENERATE P1 (11,9,7,5,4,2,1)
+
+# Load bytes 1 & 2
+move r7 r0
+load r2
+increment r0
+load r1
+
+# Reset r3
+set 00000000
+move r0 r3
+
+# Shift bits from byte 1
+lshiftc r1 # b11
+lshiftc r3
+lshiftc r1 # b10
+lshiftc r1 # b9
+lshiftc r3
+lshiftc r1 # b8
+lshiftc r1 # b7
+lshiftc r3
+lshiftc r1 # b6
+lshiftc r1 # b5
+lshiftc r3
+lshiftc r1 # p8
+
+# Shift bits from byte 2
+lshiftc r2 # b4
+lshiftc r3
+lshiftc r2 # b3
+lshiftc r2 # b2
+lshiftc r3
+lshiftc r2 # p4
+lshiftc r2 # b1
+lshiftc r3
+lshiftc r2 # p2
+lshiftc r2 # p1
+lshiftc r2 # p0
+
+# RXOR the bits in r3, shift the parity bit into r4
+rxor r3
+rshiftc r0
+lshiftc r4
+
+
+
+# GENERATE P0
+
+# Load bytes 1 & 2
+move r7 r0
+load r2
+increment r0
+load r1
+
+# Reset r3
+set 00000000
+move r0 r3
+
+# Find the rxor of byte 1 and shift into byte 2
 rxor r1
 rshiftc r0
-lshiftc r5
-rxor r2
-rshiftc r0
-lshiftc r5
-rxor r5
-rshift0 r5
-rshift0 r5
-rshiftc r0
-lshiftc r5
-
-# We have two versions of this loop: VERIFICATION and RECOVERY
-#   VERIFICATION: If the rxor resulted in 0, there are either 0 or 2 corrupted bits, so we're just verifying whether or not the memory is valid.
-#   RECOVERY: If the rxor resulted in 1, there is 1 corrupted bit, so we're looking to find and correct that bit.
-
-# If r5 is 00000001, move to recovery. Otherwise, do verification.
-set 00000001
-move r0 r3
-bneq r5 r3 verification
-
-
-
-# RECOVERY: This version of the loop recovers the correct output given that one byte is wrong.
-
-# Clear r5 to hold parity bits
-set 00000000
-move r0 r5
-
-
-
-# GET PARITY BIT 8 (b11:b5)
-
-# Move byte 1 into r3
-move r1 r3
-# Shift r3 to remove p8
-rshift0 r3
-# RXOR r3 to get p8's true value and shift it into r5
-rxor r3
-rshiftc r0
-lshiftc r5
-
-
-
-# GET PARITY BIT 4 (b11:b8,b4,b3,b2)
-
-# Move byte 1 into r3
-move r1 r3
-# Shift r3 to get only b11:8
-rshift0 r3
-rshift0 r3
-rshift0 r3
-rshift0 r3
-
-# Move byte 2 into r4
-move r2 r4
-
-# Shift r4's first 3 bits into r3
-lshiftc r4
-lshiftc r3
-lshiftc r4
-lshiftc r3
-lshiftc r4
-lshiftc r3
-
-# RXOR r3 to get p4's true value and shift it into r5
-rxor r3
-rshiftc r0
-lshiftc r5
-
-
-
-# GET PARITY BIT 2 (b11,b10,b7,b6,b4,b3,b1)
-
-# Move byte 1 into r4
-move r1 r4
-# Shift r4 into r3 to get b11, b10, b7, b6
-lshiftc r4 # shift in
-lshiftc r3
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r4 # skip
-lshift0 r4 # skip
-lshiftc r4 # shift in
-lshiftc r3
-lshiftc r4 # shift in
-lshiftc r3
-
-# Move byte 2 into r4
-move r1 r4
-# Shift r4 into r3 to get b4, b3, b1
-lshiftc r4 # shift in
-lshiftc r3
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r4 # skip
-lshift0 r4 # skip
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r3 # fill in a last 0
-
-# RXOR r3 to get p2's true value and shift it into r5
-rxor r3
-rshiftc r0
-lshiftc r5
-
-
-
-# GET PARITY BIT 1 (b11,b9,b7,b5,b4,b2,b1)
-
-# Move byte 1 into r4
-move r1 r4
-# Shift r4 into r3 to get b11, b9, b7, b5
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r4 # skip
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r4 # skip
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r4 # skip
-lshiftc r4 # shift in
-lshiftc r3
-
-# Move byte 2 into r4
-move r1 r4
-# Shift r4 into r3 to get b4, b3, b1
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r4 # skip
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r4 # skip
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r4 # skip
-lshift0 r3 # fill in a last 0
-
-# RXOR r3 to get p1's true value and shift it into r5
-rxor r3
-rshiftc r0
-lshiftc r5
-
-
-
-# GET PARITY BIT 0 (b11:1) -- don't include p8,p4,p2,p1
-
-# Get the rxor of byte 1 without p1 and put the result in r4
-move r1 r3
-rshift0 r3
-rxor r3
-move r0 r4
+rshiftc r2
 
 # Move byte 2 into r3
 move r2 r3
 
-# Shift the rxor of byte 1 into r3, replacing p0
-rshiftc r4
-rshiftc r3
-
-# Shift 2 more times to get rid of p1 and p2
-rshift0 r3
-rshift0 r3
-
-# Move b1 into r4, remove p4, move b1 back into r3
-rshiftc r3
-rshiftc r4
-rshift0 r3
-lshiftc r4
-lshiftc r3
-
-# RXOR r3 to get p0's true value (without parity bits) and shift it into r5
+# RXOR the bits in r3, shift the parity bit into r4
 rxor r3
 rshiftc r0
-lshiftc r5
-
-# r5 now contains [000 p8 p4 p2 p1 p0]
-
-# 01010 - it was a parity bit, no problem
-# 10101 - b11
-# 10111 - b10
-# 10001 - b9
-# 10011 - b8
-# 11101 - b7
-# 11111 - b6
-# 11001 - b5
-# 00101 - b4
-# 00111 - b3
-# 00001 - b2
-# 01101 - b1
-
-# clear r2:r4
-set 00000000
-move r0 r2
-move r0 r3
-move r0 r4
+lshiftc r4
 
 
 
-# BIT 11
+# Gather the actual 5 parity bits and store them in r5
 
-# clear r3
-set 00000000
-move r0 r3
-
-# move b11 from r1 into r3
-lshiftc r1
-lshiftc r3
-
-# if the parity bit pattern matches b11:
-set 00010101
-move r0 r4
-bneq r5 r4 skip_b11_inversion
-
-# invert r3, store the result in r3
-lshift1 r3
-rxor r3
-move r0 r3
-
-# move b11 into r2
-skip_b11_inversion: rshiftc r3
-lshiftc r2
-
-
-# BIT 10
-
-# clear r3
-set 00000000
-move r0 r3
-
-# move b10 from r1 into r3
-lshiftc r1
-lshiftc r3
-
-# if the parity bit pattern matches b10:
-set 00010111
-move r0 r4
-bneq r5 r4 skip_b10_inversion
-
-# invert r3, store the result in r3
-lshift1 r3
-rxor r3
-move r0 r3
-
-# move b10 into r2
-skip_b10_inversion: rshiftc r3
-lshiftc r2
-
-
-# BIT 9
-
-# clear r3
-set 00000000
-move r0 r3
-
-# move b9 from r1 into r3
-lshiftc r1
-lshiftc r3
-
-# if the parity bit pattern matches b9:
-set 00010001
-move r0 r4
-bneq r5 r4 skip_b9_inversion
-
-# invert r3, store the result in r3
-lshift1 r3
-rxor r3
-move r0 r3
-
-# move b9 into r2
-skip_b9_inversion: rshiftc r3
-lshiftc r2
-
-# Byte 1, stored in r2, is ready
-
-# Store byte 1 in output, increment output counter
-move r6 r0
-store r2
-increment r6
-
-# clear r2
-set 00000000
-move r0 r3
-
-
-
-# BIT 8
-
-# clear r3
-set 00000000
-move r0 r3
-
-# move b8 from r1 into r3
-lshiftc r1
-lshiftc r3
-
-# if the parity bit pattern matches b8:
-set 00010011
-move r0 r4
-bneq r5 r4 skip_b8_inversion
-
-# invert r3, store the result in r3
-lshift1 r3
-rxor r3
-move r0 r3
-
-# move b8 into r2
-skip_b8_inversion: rshiftc r3
-lshiftc r2
-
-
-# BIT 7
-
-# clear r3
-set 00000000
-move r0 r3
-
-# move b7 from r1 into r3
-lshiftc r1
-lshiftc r3
-
-# if the parity bit pattern matches b7:
-set 00011101
-move r0 r4
-bneq r5 r4 skip_b7_inversion
-
-# invert r3, store the result in r3
-lshift1 r3
-rxor r3
-move r0 r3
-
-# move b7 into r2
-skip_b7_inversion: rshiftc r3
-lshiftc r2
-
-
-# BIT 6
-
-# clear r3
-set 00000000
-move r0 r3
-
-# move b8 from r1 into r3
-lshiftc r1
-lshiftc r3
-
-# if the parity bit pattern matches b6:
-set 00011111
-move r0 r4
-bneq r5 r4 skip_b8_inversion
-
-# invert r3, store the result in r3
-lshift1 r3
-rxor r3
-move r0 r3
-
-# move b6 into r2
-skip_b6_inversion: rshiftc r3
-lshiftc r2
-
-
-# BIT 5
-
-# clear r3
-set 00000000
-move r0 r3
-
-# move b5 from r1 into r3
-lshiftc r1
-lshiftc r3
-
-# if the parity bit pattern matches b5:
-set 00011001
-move r0 r4
-bneq r5 r4 skip_b5_inversion
-
-# invert r3, store the result in r3
-lshift1 r3
-rxor r3
-move r0 r3
-
-# move b5 into r2
-skip_b5_inversion: rshiftc r3
-lshiftc r2
-
-
-
-# Move on to input byte 2
-increment r7
+# Load bytes 1 & 2
 move r7 r0
+load r2
+increment r0
 load r1
 
-
-
-# BIT 4
-
-# clear r3
+# Reset r3 & r5
 set 00000000
 move r0 r3
+move r0 r5
 
-# move b4 from r1 into r3
-lshiftc r1
-lshiftc r3
+# Shift bits from byte 1
+lshiftc r1 # b11
+lshiftc r1 # b10
+lshiftc r1 # b9
+lshiftc r1 # b8
+lshiftc r1 # b7
+lshiftc r1 # b6
+lshiftc r1 # b5
+lshiftc r1 # p8
+lshiftc r5
 
-# if the parity bit pattern matches b4:
-set 00000101
-move r0 r4
-bneq r5 r4 skip_b4_inversion
+# Shift bits from byte 2
+lshiftc r2 # b4
+lshiftc r2 # b3
+lshiftc r2 # b2
+lshiftc r2 # p4
+lshiftc r5
+lshiftc r2 # b1
+lshiftc r2 # p2
+lshiftc r5
+lshiftc r2 # p1
+lshiftc r5
+lshiftc r2 # p0
+lshiftc r5
 
-# invert r3, store the result in r3
-lshift1 r3
-rxor r3
-move r0 r3
-
-# move b4 into r2
-skip_b4_inversion: rshiftc r3
-lshiftc r2
 
 
-# BIT 3
 
-# clear r3
+# HERE THERE ARE TWO POSSIBILITIES:
+#   1: The calculated and actual p0 match. In this case, 0 or 2 bits have been swapped.
+#   2: The calculated and actual p0 conflict. In this case, 1 bit has been swapped.
+# To figure out what to do, we'll check if they're equal and jump if they are.
+
+# Load bytes 1 & 2
+move r7 r0
+load r2
+increment r0
+load r1
+
+# The calculated parity bit is in b8 of r4
+# The actual parity bit is in b8 of r2
+# We'll reset r3, shift in both bits
 set 00000000
 move r0 r3
+move r4 r0
+rshiftc r0
+rshiftc r3
+move r2 r0
+rshiftc r0
+rshiftc r3
 
-# move b3 from r1 into r3
-lshiftc r1
-lshiftc r3
-
-# if the parity bit pattern matches b3:
-set 00000111
-move r0 r4
-bneq r5 r4 skip_b3_inversion
-
-# invert r3, store the result in r3
-lshift1 r3
+# Now r3 only carries the two parity bits. XOR and check for equality.
 rxor r3
 move r0 r3
+set 00000000
+move r0 r1
 
-# move b3 into r2
-skip_b3_inversion: rshiftc r3
-lshiftc r2
+# If the XOR != 0 (bits are not equal), jump to the RECOVERY section. Otherwise, do VERICIATION.
+bneq r3 r1 recovery
+
+# VERIFICATION:
+
+# Compare calculated parity bits (r4) and actual parity bits (r5). If they're equal, input is valid. If they're not, input is invalid.
+bneq r4 r5 invalid_output
 
 
-# BIT 2
+# IF THE OUTPUT IS VALID:
 
-# clear r3
+# Generate output byte 1 (00000BA9)
+
+# Load bytes 1 & 2
+move r7 r0
+load r2
+increment r0
+load r1
+
+# Reset r3 & r4
 set 00000000
 move r0 r3
+move r0 r5
 
-# move b2 from r1 into r3
-lshiftc r1
+# Shift bits from byte 1
+lshiftc r1 # b11
+lshiftc r3
+lshiftc r1 # b10
+lshiftc r3
+lshiftc r1 # b9
 lshiftc r3
 
-# if the parity bit pattern matches b2:
-set 00000001
-move r0 r4
-bneq r5 r4 skip_b2_inversion
 
-# invert r3, store the result in r3
-lshift1 r3
-rxor r3
+
+# Generate output byte 2 (87654321)
+
+# Load bytes 1 & 2
+move r7 r0
+load r2
+increment r0
+load r1
+
+# Shift bits from byte 1
+lshiftc r1 # b11
+lshiftc r1 # b10
+lshiftc r1 # b9
+lshiftc r1 # b8
+lshiftc r4
+lshiftc r1 # b7
+lshiftc r4
+lshiftc r1 # b6
+lshiftc r4
+lshiftc r1 # b5
+lshiftc r4
+
+# Shift bits from byte 2
+lshiftc r2 # b4
+lshiftc r4
+lshiftc r2 # b3
+lshiftc r4
+lshiftc r2 # b2
+lshiftc r4
+lshiftc r2 # p4
+lshiftc r2 # b1
+lshiftc r4
+
+# Output 00000000 00000000
+move r6 r0
+store r4
+increment r0
+store r3
+
+# Increment counters by 2
+increment r6
+increment r6
+increment r7
+increment r7
+
+# Set r3 to 30
+set 00011110
 move r0 r3
 
-# move b2 into r2
-skip_b2_inversion: rshiftc r3
-lshiftc r2
+# If r6 is less than 30, repeat the loop
+blt r6 r3 whileloop
 
-# skip a bit
+# Done flag
+done
+
+
+
+# If the parity bits are all good:
+
+# Output 11111111 11111111
+invalid_output: set 11111111
+move r0 r1
+move r6 r0
+store r1
+increment r0
+store r1
+
+# Increment counters by 2
+increment r6
+increment r6
+increment r7
+increment r7
+
+# Set r3 to 30
+set 00011110
+move r0 r3
+
+# If r6 is less than 30, repeat the loop
+blt r6 r3 whileloop
+
+# Done flag
+done
+
+
+
+
+
+
+
+
+
+
+# RECOVERY:
+
+# Load bytes 1 & 2
+recovery: move r7 r0
+load r2
+increment r0
+load r1
+
+# Right now calculated parity bits are in r4, actual parity bits are in r5. RXOR them one by one and store in r3.
+set 00000000
+rshiftc r4
+rshiftc r0
+rshiftc r5
+rshiftc r0
+rxor r0
+rshiftc r0
+rshiftc r3
+
+set 00000000
+rshiftc r4
+rshiftc r0
+rshiftc r5
+rshiftc r0
+rxor r0
+rshiftc r0
+rshiftc r3
+
+set 00000000
+rshiftc r4
+rshiftc r0
+rshiftc r5
+rshiftc r0
+rxor r0
+rshiftc r0
+rshiftc r3
+
+set 00000000
+rshiftc r4
+rshiftc r0
+rshiftc r5
+rshiftc r0
+rxor r0
+rshiftc r0
+rshiftc r3
+
+set 00000000
+rshiftc r4
+rshiftc r0
+rshiftc r5
+rshiftc r0
+rxor r0
+rshiftc r0
+rshiftc r3
+
+# Move the parity bits to the end (XXXXX000 -> 000XXXXX)
+rshift0 r3
+rshift0 r3
+rshift0 r3
+
+# Parity bit XORs are now calculated and stored in r3.
+
+# We'll now generate the 2 output bytes. We will output 1 at a time from r1.
+
+# GENERATE OUTPUT BYTE 1
+
+# Reset r1
+set 00000000
+move r0 r1
+
+# Load "01000" into r1. 3 bits left.
+lshift0 r1
+lshift1 r1
+lshift0 r1
+lshift0 r1
 lshift0 r1
 
 
-# BIT 1
 
-# clear r3
+# BIT 11:
+
+# Load byte 1
+move r7 r0
+increment r0
+load r4
+
+# Clear r5
 set 00000000
-move r0 r3
+move r0 r5
 
-# move b1 from r1 into r3
+# Move b11 into r5
+lshiftc r4
+lshiftc r5
+
+# If the pattern matches an error for b11, invert the bit
+set 00011111
+move r0 r2
+bneq r2 r3 skip_b11
+
+# Shift a 1 into r5 which will be xored after the branch.
+lshift1 r5
+
+# RXOR r5 to invert if needed, store the bit in r1
+skip_b11: rxor r5
+rshiftc r0
 lshiftc r1
-lshiftc r3
 
-# if the parity bit pattern matches b1:
+
+# BIT 10:
+
+# Clear r5
+set 00000000
+move r0 r5
+
+# Move b10 into r5
+lshiftc r4
+lshiftc r5
+
+# If the pattern matches an error for b10, invert the bit
+set 00011101
+move r0 r2
+bneq r2 r3 skip_b10
+
+# Shift a 1 into r5 which will be xored after the branch.
+lshift1 r5
+
+# RXOR r5 to invert if needed, store the bit in r1
+skip_b10: rxor r5
+rshiftc r0
+lshiftc r1
+
+
+# BIT 9:
+
+# Clear r5
+set 00000000
+move r0 r5
+
+# Move b9 into r5
+lshiftc r4
+lshiftc r5
+
+# If the pattern matches an error for b9, invert the bit
+set 00011011
+move r0 r2
+bneq r2 r3 skip_b9
+
+# Shift a 1 into r5 which will be xored after the branch.
+lshift1 r5
+
+# RXOR r5 to invert if needed, store the bit in r1
+skip_b9: rxor r5
+rshiftc r0
+lshiftc r1
+
+
+# Output byte 1 is now complete. Output the byte.
+move r6 r0
+increment r0
+store r1
+
+
+# GENERATE OUTPUT BYTE 1
+
+# Reset r1
+set 00000000
+move r0 r1
+
+
+
+# BIT 8:
+
+# Clear r5
+set 00000000
+move r0 r5
+
+# Move b8 into r5
+lshiftc r4
+lshiftc r5
+
+# If the pattern matches an error for b8, invert the bit
+set 00011001
+move r0 r2
+bneq r2 r3 skip_b8
+
+# Shift a 1 into r5 which will be xored after the branch.
+lshift1 r5
+
+# RXOR r5 to invert if needed, store the bit in r1
+skip_b8: rxor r5
+rshiftc r0
+lshiftc r1
+
+
+# BIT 7:
+
+# Clear r5
+set 00000000
+move r0 r5
+
+# Move b7 into r5
+lshiftc r4
+lshiftc r5
+
+# If the pattern matches an error for b7, invert the bit
+set 00010111
+move r0 r2
+bneq r2 r3 skip_b7
+
+# Shift a 1 into r5 which will be xored after the branch.
+lshift1 r5
+
+# RXOR r5 to invert if needed, store the bit in r1
+skip_b7: rxor r5
+rshiftc r0
+lshiftc r1
+
+
+# BIT 6:
+
+# Clear r5
+set 00000000
+move r0 r5
+
+# Move b6 into r5
+lshiftc r4
+lshiftc r5
+
+# If the pattern matches an error for b6, invert the bit
+set 00010101
+move r0 r2
+bneq r2 r3 skip_b6
+
+# Shift a 1 into r5 which will be xored after the branch.
+lshift1 r5
+
+# RXOR r5 to invert if needed, store the bit in r1
+skip_b6: rxor r5
+rshiftc r0
+lshiftc r1
+
+
+# BIT 5:
+
+# Clear r5
+set 00000000
+move r0 r5
+
+# Move b5 into r5
+lshiftc r4
+lshiftc r5
+
+# If the pattern matches an error for b5, invert the bit
+set 00010011
+move r0 r2
+bneq r2 r3 skip_b5
+
+# Shift a 1 into r5 which will be xored after the branch.
+lshift1 r5
+
+# RXOR r5 to invert if needed, store the bit in r1
+skip_b5: rxor r5
+rshiftc r0
+lshiftc r1
+
+
+# BIT 4:
+
+# Load byte 2
+move r7 r0
+load r4
+
+# Clear r5
+set 00000000
+move r0 r5
+
+# Move b4 into r5
+lshiftc r4
+lshiftc r5
+
+# If the pattern matches an error for b4, invert the bit
+set 00001111
+move r0 r2
+bneq r2 r3 skip_b4
+
+# Shift a 1 into r5 which will be xored after the branch.
+lshift1 r5
+
+# RXOR r5 to invert if needed, store the bit in r1
+skip_b4: rxor r5
+rshiftc r0
+lshiftc r1
+
+
+# BIT 3:
+
+# Clear r5
+set 00000000
+move r0 r5
+
+# Move b3 into r5
+lshiftc r4
+lshiftc r5
+
+# If the pattern matches an error for b3, invert the bit
 set 00001101
-move r0 r4
-bneq r5 r4 skip_b1_inversion
+move r0 r2
+bneq r2 r3 skip_b3
 
-# invert r3, store the result in r3
-lshift1 r3
-rxor r3
-move r0 r3
+# Shift a 1 into r5 which will be xored after the branch.
+lshift1 r5
 
-# move b1 into r2
-skip_b2_inversion: rshiftc r3
-lshiftc r2
-
-
-# Byte 2, stored in r2, is ready
-
-# Store byte 2 in output
-move r6 r0
-store r2
-
-
-
-
-
-# Increment both counters and loop if r6 < 30
-increment r6
-increment r7
-set 00001110
-move r0 r5
-blt r6 r5 whileloop
-done
-
-
-
-
-
-
-
-
-
-
-
-# VERIFICATION: This version of the loop checks that the bytes are valid.
-
-# Moves byte 2 into r0
-verification: move r2 r0
-
-# Moves bit 8 of byte 2 into r5
+# RXOR r5 to invert if needed, store the bit in r1
+skip_b3: rxor r5
 rshiftc r0
-rshiftc r5
-
-# Moves bit 7 of byte 2 into r5
-rshiftc r0
-rshiftc r5
-
-# Moves bit 6 of byte 2 into r5
-rshiftc r0
-rshiftc r5
-
-# Moves bit 4 of byte 2 into r5
-rshift0 r0
-rshiftc r0
-rshiftc r5
-
-# Moves byte 1 into r0
-move r1 r0
-
-# Moves bit 8 of byte 1 into r5
-rshiftc r0
-rshiftc r5
-
-# r5 should now be 01010XXX
-# shift to the right to pad
-rshift0 r5
-rshift0 r5
-rshift0 r5
-
-# r5 should now be 00001010
-
-set 00001010
-move r0 r3
-bneq r3 r5 invalid_message
+lshiftc r1
 
 
+# BIT 2:
 
-# CHECK FOR PARITY BIT 8 (b11:b5)
-
-# Move byte 1 into r3
-move r1 r3
-# Shift r3 to remove p8
-rshift0 r3
-# RXOR r3 to get p8's true value and put that value in r5
-rxor r3
-move r0 r5
-
-# r5 should now be 00000000
+# Clear r5
 set 00000000
-move r0 r3
-bneq r3 r5 invalid_message
+move r0 r5
 
-
-
-# CHECK FOR PARITY BIT 4 (b11:b8,b4,b3,b2)
-
-# Move byte 1 into r3
-move r1 r3
-# Shift r3 to get only b11:8
-rshift0 r3
-rshift0 r3
-rshift0 r3
-rshift0 r3
-
-# Move byte 2 into r4
-move r2 r4
-
-# Shift r4's first 3 bits into r3
+# Move b2 into r5
 lshiftc r4
-lshiftc r3
+lshiftc r5
+
+# If the pattern matches an error for b2, invert the bit
+set 00001011
+move r0 r2
+bneq r2 r3 skip_b2
+
+# Shift a 1 into r5 which will be xored after the branch.
+lshift1 r5
+
+# RXOR r5 to invert if needed, store the bit in r1
+skip_b2: rxor r5
+rshiftc r0
+lshiftc r1
+
+
+# BIT 1:
+
+# Clear r5
+set 00000000
+move r0 r5
+
+# Move b1 into r5
+lshift0 r4 # Skip a bit
 lshiftc r4
-lshiftc r3
-lshiftc r4
-lshiftc r3
+lshiftc r5
 
-# RXOR r3 to get p4's true value and put that value in r5
-rxor r3
-move r0 r5
+# If the pattern matches an error for b1, invert the bit
+set 00000111
+move r0 r2
+bneq r2 r3 skip_b1
 
-# r5 should now be 00000001
-set 00000001
-move r0 r3
-bneq r3 r5 invalid_message
+# Shift a 1 into r5 which will be xored after the branch.
+lshift1 r5
 
-
-
-# CHECK FOR PARITY BIT 2 (b11,b10,b7,b6,b4,b3,b1)
-
-# Move byte 1 into r4
-move r1 r4
-# Shift r4 into r3 to get b11, b10, b7, b6
-lshiftc r4 # shift in
-lshiftc r3
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r4 # skip
-lshift0 r4 # skip
-lshiftc r4 # shift in
-lshiftc r3
-lshiftc r4 # shift in
-lshiftc r3
-
-# Move byte 2 into r4
-move r1 r4
-# Shift r4 into r3 to get b4, b3, b1
-lshiftc r4 # shift in
-lshiftc r3
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r4 # skip
-lshift0 r4 # skip
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r3 # fill in a last 0
-
-# RXOR r3 to get p2's true value and put that value in r5
-rxor r3
-move r0 r5
-
-# r5 should now be 00000000
-set 00000000
-move r0 r3
-bneq r3 r5 invalid_message
+# RXOR r5 to invert if needed, store the bit in r1
+skip_b1: rxor r5
+rshiftc r0
+lshiftc r1
 
 
-
-# CHECK FOR PARITY BIT 1 (b11,b9,b7,b5,b4,b2,b1)
-
-# Move byte 1 into r4
-move r1 r4
-# Shift r4 into r3 to get b11, b9, b7, b5
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r4 # skip
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r4 # skip
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r4 # skip
-lshiftc r4 # shift in
-lshiftc r3
-
-# Move byte 2 into r4
-move r1 r4
-# Shift r4 into r3 to get b4, b3, b1
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r4 # skip
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r4 # skip
-lshiftc r4 # shift in
-lshiftc r3
-lshift0 r4 # skip
-lshift0 r3 # fill in a last 0
-
-# RXOR r3 to get p1's true value and put that value in r5
-rxor r3
-move r0 r5
-
-# r5 should now be 00000001
-set 00000001
-move r0 r3
-bneq r3 r5 invalid_message
-
-
-
-# CHECK FOR PARITY BIT 0 (b11:1,p8,p4,p2,p1)
-
-# Get the rxor of byte 1 and put the result in r4
-rxor r1
-move r0 r4
-
-# Move byte 2 into r3
-move r2 r3
-
-# Shift the rxor of byte 1 into r3, replacing p0
-rshiftc r4
-rshiftc r3
-
-# RXOR r3 to get p0's true value and put that value in r5
-rxor r3
-move r0 r5
-
-# r5 should now be 00000000
-set 00000000
-move r0 r3
-bneq r3 r5 invalid_message
-
-
-
-# If it's reached this point, the message is valid
-
-# VALID MESSAGE:
-
-# Clear r3 and r4
-set 00000000
-move r0 r3
-move r0 r4
-
-# Move b11-b9 out of r1 into r3
-lshiftc r1 # b11 out of r1
-lshiftc r3 # and into r3
-lshiftc r1 # b10 out of r1
-lshiftc r3 # and into r3
-lshiftc r1 # b9 out of r1
-lshiftc r3 # and into r3
-
-# r3 is now ready with byte 1
-
-# Move b8-b5 out of r1 into r4
-lshiftc r1 # b8 out of r1
-lshiftc r4 # and into r4
-lshiftc r1 # b7 out of r1
-lshiftc r4 # and into r4
-lshiftc r1 # b6 out of r1
-lshiftc r4 # and into r4
-lshiftc r1 # b5 out of r1
-lshiftc r4 # and into r4
-
-# Move b4-b1 out of r2 into r4
-lshiftc r2 # b4 out of r1
-lshiftc r4 # and into r4
-lshiftc r2 # b3 out of r1
-lshiftc r4 # and into r4
-lshiftc r2 # b2 out of r1
-lshiftc r4 # and into r4
-lshift0 r2 # skip
-lshiftc r2 # b1 out of r1
-lshiftc r4 # and into r4
-
-# r4 is now ready with byte 2
-
-# move the output address into r0 and output the 2 bytes
+# Output byte 2 is now complete. Output the byte.
 move r6 r0
-store r3
-increment r0
-store r4
+store r1
 
-# Increment both counters and loop if r6 < 30
+
+
+
+
+# Increment counters by 2
 increment r6
 increment r6
 increment r7
 increment r7
-set 00001110
-move r0 r5
-blt r6 r5 whileloop
-done
 
+# Set r3 to 30
+set 00011110
+move r0 r3
 
-# INVALID MESSAGE:
+# If r6 is less than 30, repeat the loop
+blt r6 r3 whileloop
 
-# Sets the first bit of the output to 1
-invalid_message: rshift1 r3
-
-# move the output address into r0 and output the 2 bytes
-move r6 r0
-store r3
-increment r0
-store r4
-
-# Increment both counters and loop if r6 < 30
-increment r6
-increment r6
-increment r7
-increment r7
-set 00001110
-move r0 r5
-blt r6 r5 whileloop
+# Raise the done flag
 done
