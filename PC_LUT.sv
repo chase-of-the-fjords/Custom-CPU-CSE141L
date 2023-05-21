@@ -1,4 +1,4 @@
-module PC_LUT #(parameter D=12)(
+module PC_LUT #(parameter D=10)(
         input       [7:0] addr,
         output logic[D-1:0] target
     );

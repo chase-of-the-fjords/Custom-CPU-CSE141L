@@ -1,6 +1,6 @@
 // program counter
 // supports absolute jumps
-module PC #(parameter D=12)(
+module PC #(parameter D=10)(
     input   reset,					// synchronous reset
             clk,
             absjump_en,				// abs. jump enable

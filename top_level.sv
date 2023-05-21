@@ -4,7 +4,7 @@ module top_level(
     output logic done
     );
 
-    parameter   D = 12,             // program counter width
+    parameter   D = 10,             // program counter width
                 A = 3,             	// ALU command bit width
                 R = 3;              // register bit width
 
@@ -14,10 +14,11 @@ module top_level(
     wire[7:0]   datA, datB, dat0,	// from RegFile
                 NonRegData,         // data from ALU or data memory
                 RegData,            // data from register file
-                RegDataIn,          // true data into register file
+                DataIn,             // true data into register file
                 dmOut;              // data memory output
     
-    wire[R-1:0] RegDes;
+    wire[R-1:0] DestReg,
+                ReadAddr;
     
     wire branchEnable;      
 
@@ -37,7 +38,8 @@ module top_level(
             RegWrite,
             MemtoReg,
             RegtoReg,
-            SinChange;
+            SinChange,
+            RegRead;                    
     
     wire[8:0]   mach_code;            // machine code
     wire[A-1:0] alu_cmd;                  
@@ -68,7 +70,7 @@ module top_level(
             .target);   
 
     // contains machine code
-    instr_ROM ir1(
+    instr_ROM #(.D(D)) ir1(
             .prog_ctr,
             .mach_code);
 
@@ -82,22 +84,22 @@ module top_level(
             .RegWrite,     
             .MemtoReg,
             .RegtoReg,              // enable reg to reg move
-            .SinChange);            // enable carry in to change          
+            .SinChange,             // enable carry in to change  
+            .RegRead);                    
 
     assign NonRegData = MemtoReg ? dmOut : rslt;        // data for standard operation
     assign RegData = !RegDst ? datA : dat0;             // data for reg to reg moves
-    assign RegDataIn = RegtoReg ? RegData : NonRegData; // true data into register file
-    assign RegDes = RegDst ? rd_addrA : 3'b0;           // which register to write into
-    
-    // EDIT - figure out mem for R0 and RA
+    assign DataIn = RegtoReg ? RegData : NonRegData;    // true data into register file
+    assign DestReg = RegDst ? rd_addrA : 3'b0;          // which register to write into
+    assign ReadAddr = RegRead ? rd_addrA : 3'b0;        // which register to read from
 
     reg_file #(.pw(R)) rf1(
-            .dat_in(RegDataIn),
+            .dat_in(DataIn),
             .clk,
             .wr_en(RegWrite),
-            .rd_addrA(rd_addrA),
+            .rd_addrA(ReadAddr),
             .rd_addrB(rd_addrB),
-            .wr_addr(RegDes),
+            .wr_addr(DestReg),
             .datA_out(datA),
             .datB_out(datB),
             .dat0_out(dat0)); 
@@ -107,7 +109,6 @@ module top_level(
             .alu_cmd,
             .inA(datA),
             .inB(datB),
-            .in0(dat0),
             .sc_in,                      
             .typeselect,
             .immed,

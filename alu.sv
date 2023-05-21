@@ -1,7 +1,7 @@
 // ALU
 module alu(
     input[2:0] alu_cmd,         // ALU instructions
-    input[7:0] inA, inB, in0,   // 8-bit wide data path
+    input[7:0] inA, inB,        // 8-bit wide data path
     input      sc_in,           // shift_carry in
     input[2:0] typeselect,
     input[3:0] immed,
@@ -21,7 +21,7 @@ module alu(
 
         case(alu_cmd)
             3'b000: begin // xor
-                rslt = ^inA; // EDIT
+                rslt = ^inA;
             end
             3'b001: begin // shift
                 case(typeselect)
@@ -50,8 +50,8 @@ module alu(
                 if (inA != inB)
                     notequal = 1;
             end
-            3'b100: begin // halfset
-                rslt = {in0[3:0], immed};
+            3'b100: begin // halfset - set half of R0
+                rslt = {inA[3:0], immed};
             end
             3'b101: begin // and - bitwise AND
                 rslt = inA & inB;
