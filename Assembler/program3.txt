@@ -45,7 +45,7 @@ rshift0 r6
 rshift0 r6
 
 # Load byte 1 into r2
-move r6 r0
+move r7 r0
 load r2
 
 # Move first 4 bits of byte 1 into r1

@@ -37,7 +37,7 @@ top_level DUT(.clk, .reset(req), .done);	 // replace "top_level" with the name o
 initial begin
 // generate parity from random 11-bit messages 
   for(int i=0; i<15; i++) begin
-	d2_in[i] = $random;
+	d2_in[i] = $random>>4;
     p8 = ^d2_in[i][11:5];
     p4 = (^d2_in[i][11:8])^(^d2_in[i][4:2]); 
     p2 = d2_in[i][11]^d2_in[i][10]^d2_in[i][7]^d2_in[i][6]^d2_in[i][4]^d2_in[i][3]^d2_in[i][1];

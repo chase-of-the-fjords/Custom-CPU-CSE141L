@@ -14,17 +14,6 @@ module reg_file #(parameter pw=3)(
 
     logic[7:0] core[2**pw];         // 2-dim array  8 wide  16 deep
 
-    initial begin
-        core[0] = 8'b00000000;
-        core[1] = 8'b00000000;
-        core[2] = 8'b00000000;
-        core[3] = 8'b00000000;
-        core[4] = 8'b00000000;
-        core[5] = 8'b00000000;
-        core[6] = 8'b00000000;
-        core[7] = 8'b00000000;
-    end
-
     // reads are combinational
     assign datA_out = core[rd_addrA];
     assign datB_out = core[rd_addrB];
