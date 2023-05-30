@@ -31,8 +31,8 @@ machine_code = []
 
 line_num = 0
 
-input_file = "Project/cse141L-project/Assembler/program3.txt"
-output_file = "Project/cse141L-project/Assembler/mach_code_p3.txt"
+input_file = "Project/cse141L-project/Assembler/program1.txt"
+output_file = "Project/cse141L-project/Assembler/mach_code_p1.txt"
 
 with open(input_file) as file:
     for line in file:
